@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Lista de Comandas</title></head>
+<body>
+
+	<h1>Comandas</h1>
+	<a href="/comandas/nova">Nova Comanda</a>
+	<table>
+	
+		<tr>
+		    <th>ID</th>
+            <th>Cliente</th>
+            <th>Data</th>
+            <th>Total</th>
+			<th>Código de Barras</th>
+		</tr>
+		
+		<tr th:each="comanda : ${comandas}">
+		    <td th:text="${comanda.id}"></td>
+            <td th:text="${comanda.cliente.nome}"></td>
+            <td th:text="${#dates.format(comanda.data, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${comanda.total}"></td>
+            <td th:text="${comanda.codigoBarras}"></td>
+		</tr>
+	</table>
+
+</body>
+
+</html>

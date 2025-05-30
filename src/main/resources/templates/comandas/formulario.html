@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head><title>Nova Comanda</title></head>
+
+<body>
+	<h1>Nova Comanda</h1>
+	<form th:action="@{/comandas/salvar}" th:object="${comanda}" method="post">
+	
+		<label>Cliente:</label>
+		<select th:field="*{cliente}" required>
+			<option th:each="cliente : ${clintes}" th:value="${cliente}" th:text="${cliente.nome}">Cliente</option>
+		</select><br/>
+		
+		<label>Produtos:</label><br/>
+		<select th:field="*{produto}" multiple required>
+		    <option th:each="produto : ${produtos}" th:value="${produto.id}" th:text="${produto.nome}">Produto</option>
+		</select>
+	
+	
+	    <button type="submit">Salvar Comanda</button>
+	</form>
+
+</body>
+</html>

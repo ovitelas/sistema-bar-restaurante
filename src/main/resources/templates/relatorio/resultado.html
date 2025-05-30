@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Resultado do Relátorio</title>
+</head>
+<body>
+	<h1>Comandas Filtradas</h1>
+	<a href="/relatorio">Voltar ao Filtro</a>
+	<table border="1">
+		<tr>
+		    <th>ID</th>
+            <th>Cliente</th>
+            <th>Data</th>
+            <th>Total</th>
+		</tr>
+		<tr th:each="comanda : ${comandas}">
+			<td th:text="${comanda.id}"></td>
+			<td th:text="${comanda.cliente.nome}"></td>
+			<td th:text="${comanda.data}"></td>
+			<td>
+				<span th:text="${numbers.formatDecimal(
+				comanda.produtos.stream().map(p -> p.preco).reduce(0, 0 (a, b) - > a + b),
+				1, 'POINT, 2, 'COMMA')}">0.00</span>	
+			</td>
+		</tr>		
+	</table>
+</body>
+</html>

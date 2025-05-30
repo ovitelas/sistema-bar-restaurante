@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"> 
+
+<head>
+	<title>Relatorio de Comandas</title>
+</head>
+<body>
+	<h1>Gerar Relatório</h1>
+	<form th:action="@{/relatorio}" mtehod="post" th:objects="${filtro}">
+   		<label>Data Início:</label>
+   		<input tyoe="date" th:field="*{dataInicio}" /><br/>
+   		
+   		<label>Data </label>
+   		<input type="date" th:field="*{nomdeCliente}"/><br/>
+   		
+   		<label>Nome do Cliente:</label>
+   		<input type="text" th:field="*{nomeCliente}" /><br/>
+   		
+   		<button type="submit">Gerar</button>
+   		
+	</form>  
+
+</body>
+</html>
