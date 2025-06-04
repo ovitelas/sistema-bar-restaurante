@@ -7,19 +7,28 @@
 <body>
 	<h1>Produtos</h1>
 	<a href="/produtos/novo">Novo Produto</a>
+	<form action="#" th:action="@{/produtos/buscar}" method="get">
+		<input type="text" name="nome" placeholder="Buscar por nome"/>
+		<input type="text" name="codigoBarras" placeholder="Buscar por código de barras"/>
+		<button type="submit">Buscar</button>
+		<a href="/produtos">Limpar</a>
+	</form>
+	<br/>
 	<table>
 		<tr>
             <th>Nome</th>
             <th>Descrição</th>
-            <th>valor</th>
+            <th>Preço</th>
             <th>Codigo de Barras</th>
+            <th>Quantidade</th>
 		</tr>
 		
 		<tr th:each="produto : ${produtos}">
 			<td th:text="${produto.nome}">Nome</td>
 			<td th:text="${produto.descricao}">Descrição</td>
-			<td th:text="${produto.valor}">0.00</td>
+			<td th:text="${produto.preco}">0.00</td>
 			<td th:text="${produto.codigoBarras}">Código</td>
+			<td th:text="${produto.quantidadeEstoque}">0</td>
 			<td>
 				<a th:href="@{/produtos/editar/{id}(id=${produto.id})}">Editar</a>
                 <a th:href="@{/produtos/excluir/{id}(id=${produto.id})}">Excluir</a>

@@ -44,10 +44,64 @@ src
 - O banco de dados ainda será configurado (lembrar de configurar o H2 no `application.properties`).
 - Projeto ainda em desenvolvimento. Futuras melhorias serão adicionadas.
 
-## 🧑‍💻 Autor
+✍️ Autor 
 
-Victor Hugo Barbosa Soares  
-[LinkedIn](https://linkedin.com/in/okvictorhugo)  
-[GitHub](https://github.com/okvictorhugo)
+Victor Hugo B. Soares
+📧 [E-mail - contatovictorhugosoares@gmail.com](contatovictorhugosoares@gmail.com)
+🌐 [LinkedIn](https://linkedin.com/in/okvictorhugo)
+📞 [Telefone(WhatsApp) +55 11 964628356](https://wa.me/+5511964628356)
 
+
+# 🍽️ Bar/Restaurant System 🇺🇸
+
+This project is a web system developed in **Java with Spring Boot** for managing orders in a bar or restaurant. It allows product, customer, and order registration and management, as well as PDF and Excel report generation.
+
+## 🔧 Technologies
+
+- Java 17+  
+- Spring Boot  
+- Thymeleaf  
+- Spring Data JPA  
+- H2 Database (coming soon)  
+- Lombok  
+- Maven  
+
+## 📋 Features
+
+- Create, edit, and delete products  
+- Create, edit, and delete customers  
+- Create orders linking products and customers  
+- Generate reports by date range or customer  
+- Export reports in PDF and Excel  
+
+## ✅ Completed Steps
+
+- Initial project structure  
+- CRUD for products and customers  
+- Integration of orders with products and customers  
+- Report generation  
+
+## 📁 Structure
+
+src
+├── controller
+├── dto
+├── model
+├── repository
+├── service
+└── templates
+
+
+## 📌 Notes
+
+- The database is not yet configured (remember to configure H2 in `application.properties`).  
+- Project still under development. Future improvements will be added.  
+
+
+✍️ Author 
+
+Victor Hugo B. Soares
+📧 [E-mail - contatovictorhugosoares@gmail.com](contatovictorhugosoares@gmail.com)
+🌐 [LinkedIn](https://linkedin.com/in/okvictorhugo)
+📞 [Telefone(WhatsApp) +55 11 964628356](https://wa.me/+5511964628356)
 

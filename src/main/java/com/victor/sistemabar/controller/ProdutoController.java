@@ -4,6 +4,10 @@ import com.victor.sistemabar.model.Produto;
 import com.victor.sistemabar.repository.ProdutoRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,8 +18,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/produtos")
 public class ProdutoController {
-	
-	private final ProdutoRepository produtoRepository;
+	@Autowired
+	private ProdutoRepository produtoRepository;
 	
 	@GetMapping
 	public String listarProdutos(Model model) {
@@ -30,10 +34,11 @@ public class ProdutoController {
 	}
 	
 	@PostMapping("/salvar")
-	public String salvarProduto(@Valid Produto produto, BindingResult result) {
+	public String salvarProduto(@Valid @ModelAttribute("produto") Produto produto, BindingResult result) {
 		if (result.hasErrors()) {
 			return "produtos/formulario";
 		}
+		System.out.println("Produto a ser salvo: " + produto);
 		produtoRepository.save(produto);
 		return "redirect:/produtos";
 		
@@ -50,6 +55,21 @@ public class ProdutoController {
 	public String excluirProduto(@PathVariable Long id) {
 		produtoRepository.deleteById(id);
 		return "redirect:/produtos";
+	}
+	
+	@GetMapping("/buscar")
+	public String buscarProdutos(@RequestParam (required = false) String nome,
+			@RequestParam(required = false) String codigoBarras, Model model) {
+		if (nome != null && !nome.isEmpty()) {
+			model.addAttribute("produtos", produtoRepository.findByNomeContainingIgnoreCase(nome));
+		} else if (codigoBarras != null && !codigoBarras.isEmpty()) {
+			Produto produto = produtoRepository.findByCodigoBarras(codigoBarras);
+			model.addAttribute("produtos", produto != null ? List.of(produto) : List.of());
+		} else {
+			model.addAttribute("produtos", produtoRepository.findAll());
+		}
+		
+		return "produtos/lista";
 	}
 	
 	

@@ -61,19 +61,19 @@ public class ComandaController {
 				
 	}
 	
-	@GetMapping("/comandas/novo")
-	public String mostrarFormularioCadastro(Model model) {
-		model.addAttribute("comanda", new Comanda());
-		model.addAttribute("clinetes", clienteRepository.findAll());
+	
+	@GetMapping("/editar/{id}")
+	public String editarComanda(@PathVariable Long id, Model model) {
+		Comanda comanda = comandaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Comanda inválida: " + id));
+		model.addAttribute("comanda", comanda);
+		model.addAttribute("clientes", clienteRepository.findAll());
 		model.addAttribute("produtos", produtoRepository.findAll());
-		
-		return "comanda/formulario";
+		return "comandas/formulario";
 	}
-
-	@PostMapping("/comandas")
-	public String salvar(@ModelAttribute("comanda") Comanda comanda) {
-	    comandaRepository.save(comanda);
-	    return "redirect:/comandas";
+	
+	@GetMapping("/excluir/{id}")
+	public String excluirComanda(@PathVariable Long id) {
+		comandaRepository.deleteById(id);
+		return "redirect:/comandas";
 	}
-
 }

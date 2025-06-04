@@ -1,0 +1,3 @@
+2025-06-03 16:40:29.964534-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USUARIO" not found; SQL statement:
+SELECT * FROM usuario [42102-232]

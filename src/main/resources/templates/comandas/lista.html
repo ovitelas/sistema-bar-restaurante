@@ -5,7 +5,7 @@
 
 	<h1>Comandas</h1>
 	<a href="/comandas/nova">Nova Comanda</a>
-	<table>
+	<table border="1">
 	
 		<tr>
 		    <th>ID</th>
@@ -13,6 +13,7 @@
             <th>Data</th>
             <th>Total</th>
 			<th>Código de Barras</th>
+			<th>Ações</th>
 		</tr>
 		
 		<tr th:each="comanda : ${comandas}">
@@ -21,6 +22,10 @@
             <td th:text="${#dates.format(comanda.data, 'dd/MM/yyyy HH:mm')}"></td>
             <td th:text="${comanda.total}"></td>
             <td th:text="${comanda.codigoBarras}"></td>
+            <td>
+            	<a th:href="@{'/comandas/editar' + ${comanda.id}}">Editar</a> |
+            	<a th:href="@{'/comandas/excluir/' + ${comanda.id}}" onclick="return confirm('Tem certeza que deseja excluir esta comanda?')">Excluir</a>
+            </td>
 		</tr>
 	</table>
 
