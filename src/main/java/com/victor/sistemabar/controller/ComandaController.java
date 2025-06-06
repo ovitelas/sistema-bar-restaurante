@@ -46,9 +46,8 @@ public class ComandaController {
 			return "comandas/formulario";
 		}
 		
-		BigDecimal total = comanda.getProdutos()
-				.stream()
-				.map(Produto::getPreco)
+		BigDecimal total = comanda.getItens().stream()
+				.map(item -> item.getProduto().getPreco().multiply(BigDecimal.valueOf(item.getQuantidade())))
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 		
 		comanda.setTotal(total);

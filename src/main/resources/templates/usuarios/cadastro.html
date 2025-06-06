@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cadastro de Usuário</title>
+</head>
+<body>
+    <h1>Cadastro de Novo Usuário</h1>
+    <form th:action="@{/usuarios/cadastro}" th:object="${usuarioDTO}" method="post">
+        <label>Usuário:</label>
+        <input type="text" th:field="*{username}" />
+        <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+
+        <label>Senha:</label>
+        <input type="password" th:field="*{senha}" />
+        <div th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}"></div>
+
+        <label>Confirmar Senha:</label>
+        <input type="password" th:field="*{confirmarSenha}" />
+        <div th:if="${#fields.hasErrors('confirmarSenha')}" th:errors="*{confirmarSenha}"></div>
+
+        <label>Papel (ROLE_USER / ROLE_ADMIN):</label>
+        <input type="text" th:field="*{role}" />
+        <div th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
+
+        <button type="submit">Cadastrar</button>
+    </form>
+    <a href="/produtos">Voltar</a>
+</body>
+</html>

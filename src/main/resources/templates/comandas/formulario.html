@@ -10,11 +10,11 @@
 	
 		<label>Cliente:</label>
 		<select th:field="*{cliente}" required>
-			<option th:each="cliente : ${clintes}" th:value="${cliente}" th:text="${cliente.nome}">Cliente</option>
+			<option th:each="cliente : ${clientes}" th:value="${cliente}" th:text="${cliente.nome}">Cliente</option>
 		</select><br/>
 		
 		<label>Produtos:</label><br/>
-		<select th:field="*{produto}" multiple required>
+		<select th:field="*{produtos}" multiple required>
 		    <option th:each="produto : ${produtos}" th:value="${produto.id}" th:text="${produto.nome}">Produto</option>
 		</select>
 	

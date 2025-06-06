@@ -1,46 +1,48 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-	<title>Lista de Produtos</title>
+<head><title>Lista de Produtos</title>
+<th:block th:replace="fragments/header :: head"></th:block>
 </head>
-
 <body>
-	<h1>Produtos</h1>
-	<a href="/produtos/novo">Novo Produto</a>
-	<form action="#" th:action="@{/produtos/buscar}" method="get">
-		<input type="text" name="nome" placeholder="Buscar por nome"/>
-		<input type="text" name="codigoBarras" placeholder="Buscar por código de barras"/>
-		<button type="submit">Buscar</button>
-		<a href="/produtos">Limpar</a>
-	</form>
-	<br/>
-	<table>
-		<tr>
+<h1>Produtos</h1>
+<a href="/produtos/novo" class="btn btn-success mb-3">Novo Produto</a>
+<form th:action="@{/produtos/buscar}" method="get" class="row g-3 mb-3">
+    <div class="col-auto">
+        <input type="text" name="nome" class="form-control" placeholder="Buscar por nome"/>
+    </div>
+    <div class="col-auto">
+        <input type="text" name="codigoBarras" class="form-control" placeholder="Buscar por código de barras"/>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        <a href="/produtos" class="btn btn-secondary">Limpar</a>
+    </div>
+</form>
+<table class="table table-striped">
+    <thead>
+        <tr>
             <th>Nome</th>
             <th>Descrição</th>
             <th>Preço</th>
-            <th>Codigo de Barras</th>
+            <th>Código de Barras</th>
             <th>Quantidade</th>
-		</tr>
-		
-		<tr th:each="produto : ${produtos}">
-			<td th:text="${produto.nome}">Nome</td>
-			<td th:text="${produto.descricao}">Descrição</td>
-			<td th:text="${produto.preco}">0.00</td>
-			<td th:text="${produto.codigoBarras}">Código</td>
-			<td th:text="${produto.quantidadeEstoque}">0</td>
-			<td>
-				<a th:href="@{/produtos/editar/{id}(id=${produto.id})}">Editar</a>
-                <a th:href="@{/produtos/excluir/{id}(id=${produto.id})}">Excluir</a>
-			
-			</td>
-		</tr>
-		
-	</table>
-	
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="produto : ${produtos}">
+            <td th:text="${produto.nome}"></td>
+            <td th:text="${produto.descricao}"></td>
+            <td th:text="${produto.preco}"></td>
+            <td th:text="${produto.codigoBarras}"></td>
+            <td th:text="${produto.quantidadeEstoque}"></td>
+            <td>
+                <a th:href="@{/produtos/editar/{id}(id=${produto.id})}" class="btn btn-sm btn-warning">Editar</a>
+                <a th:href="@{/produtos/excluir/{id}(id=${produto.id})}" class="btn btn-sm btn-danger">Excluir</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<th:block th:replace="fragments/footer :: footer"></th:block>
 </body>
 </html>
-
-
-
-	

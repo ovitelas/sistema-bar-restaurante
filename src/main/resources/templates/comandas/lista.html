@@ -23,7 +23,7 @@
             <td th:text="${comanda.total}"></td>
             <td th:text="${comanda.codigoBarras}"></td>
             <td>
-            	<a th:href="@{'/comandas/editar' + ${comanda.id}}">Editar</a> |
+            	<a th:href="@{'/comandas/editar/' + ${comanda.id}}">Editar</a> |
             	<a th:href="@{'/comandas/excluir/' + ${comanda.id}}" onclick="return confirm('Tem certeza que deseja excluir esta comanda?')">Excluir</a>
             </td>
 		</tr>

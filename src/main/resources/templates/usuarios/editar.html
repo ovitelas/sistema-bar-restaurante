@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Editar</title>
+</head>
+<body>
+	<h1>Editar Usuário</h1>
+	<form th:action="@{/usuarios/atualizar}" method="post">
+		<input type="hidden" name="id" th:value="${usuario.id}"/>
+		
+		<label>Username:</label>
+		<input type="text" name="username" th:value="${usuario.id}"/><br>
+		
+		<label>Nova Senha</label>
+		<input type="password" name="senha" placeholder="Deixe em branco para manter a atual"/><br>
+		
+		<label>Role:</label>
+		<select name="role">
+			<option value="ROLE_USER" th:selected="${usuario.role == 'ROLE_USER'}">ROLE_USER</option>
+			<option value="ROLE_ADMIN" th:selected="${usuario.role == 'ROLE_ADMIN'}">ROLE_ADMIN</option>
+		</select><br>
+		
+		<button type="submit">Salvar</button>
+	</form>
+	<a th:ref="@{/usuarios/listar}">Voltar</a>																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													
+</body>
+</html>

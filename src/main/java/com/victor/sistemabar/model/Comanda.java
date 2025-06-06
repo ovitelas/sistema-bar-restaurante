@@ -24,22 +24,25 @@ public class Comanda {
 	private Cliente cliente;
 	private LocalDateTime data;
 	
+		 
+	 private LocalDateTime dataHora = LocalDateTime.now();
+	 
+	 @OneToMany(mappedBy = "comanda", cascade = CascadeType.ALL, orphanRemoval = true)
+	 private List<ItemComanda> itens = new ArrayList<>();
+
+	 @Enumerated(EnumType.STRING)
+	 private StatusComanda status;
+	 
 	 @ManyToMany
 	 @JoinTable(
-	        name = "comanda_produtos",
-	        joinColumns = @JoinColumn(name = "comanda_id"),
-	        inverseJoinColumns = @JoinColumn(name = "produto_id")
-			 )
-	 
+	     name = "comanda_produtos",
+	     joinColumns = @JoinColumn(name = "comanda_id"),
+	     inverseJoinColumns = @JoinColumn(name = "produto_id")
+	 )
 	 private List<Produto> produtos = new ArrayList<>();
-	 
-	 private LocalDateTime dataHora = LocalDateTime.now();
 	 
 	 private BigDecimal total;
 	 
 	 private String codigoBarras;
 
-	
-	
-	
 }

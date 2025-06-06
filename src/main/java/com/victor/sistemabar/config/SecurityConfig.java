@@ -1,35 +1,48 @@
 package com.victor.sistemabar.config;
 
 
-import com.victor.sistemabar.service.UserDetailsServiceImpl;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+
+import com.victor.sistemabar.service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 	
+	@Bean
+	public AuthenticationSuccessHandler successHandler() {
+	    return new SimpleUrlAuthenticationSuccessHandler("/produtos"); 
+	}
+
 	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 	    .authorizeHttpRequests(auth -> auth
-	        .requestMatchers("/login", "/css/**", "/js/**", "/imagens/**").permitAll()
-	        .requestMatchers("/produtos").permitAll() 
+	        .requestMatchers("/login", "/css/**", "/js/**", "/imagens/**","/h2-console/**").permitAll()
+	        .requestMatchers("/admin/**").hasRole("ADMIN")
+	        .requestMatchers("/usuarios/**").hasRole("ADMIN") 
 	        .anyRequest().authenticated()
 	    )
 	    .formLogin(form -> form
 	        .loginPage("/login")
-	        .defaultSuccessUrl("/produtos", true) 
+	        .successHandler(successHandler())
 	        .permitAll()
 	    )
 	    .logout(logout -> logout.permitAll())
+	    .exceptionHandling(e -> e.accessDeniedPage("/acesso-negado"))
 	    .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
 		.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 		

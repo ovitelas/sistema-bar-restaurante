@@ -1,28 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Cadastro de Produto</title>
-    <meta charset="UTF-8">
+<head><title>Cadastro de Produto</title>
+<th:block th:replace="fragments/header :: head"></th:block>
 </head>
 <body>
-    <h1>Cadastrar Produto</h1>
-    <form th:action="@{/produtos/salvar}" th:object="${produto}" method="post">
-        <label>Nome:</label>
-        <input type="text" th:field="*{nome}" required/><br/>
-
-        <label>Descrição:</label>
-        <input type="text" th:field="*{descricao}" required/><br/>
-
-        <label>Preço:</label>
-        <input type="number" step="0.01" th:field="*{preco}" required/><br/>
-
-        <label>Código de Barras:</label>
-        <input type="text" th:field="*{codigoBarras}" required/><br/>
-        
-        <label>Quantidade:</label>
-        <input type="number" min="0" th field="*{quantidadeEstoque}" required/><br/>
-
-        <button type="submit">Salvar</button>
-    </form>
+<h2 th:text="${produto.id} != null ? 'Editar Produto' : 'Novo Produto'"></h2>
+<form th:action="@{/produtos/salvar}" th:object="${produto}" method="post" class="row g-3">
+    <input type="hidden" th:field="*{id}"/>
+    <div class="col-md-6">
+        <label class="form-label">Nome</label>
+        <input type="text" th:field="*{nome}" class="form-control" required/>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Código de Barras</label>
+        <input type="text" th:field="*{codigoBarras}" class="form-control" required/>
+    </div>
+    <div class="col-12">
+        <label class="form-label">Descrição</label>
+        <textarea th:field="*{descricao}" class="form-control"></textarea>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Preço</label>
+        <input type="number" step="0.01" th:field="*{preco}" class="form-control" required/>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Quantidade em Estoque</label>
+        <input type="number" th:field="*{quantidadeEstoque}" class="form-control" required/>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-success">Salvar</button>
+        <a href="/produtos" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+<th:block th:replace="fragments/footer :: footer"></th:block>
 </body>
 </html>
