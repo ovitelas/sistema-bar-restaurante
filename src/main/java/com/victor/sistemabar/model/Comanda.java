@@ -31,7 +31,7 @@ public class Comanda {
 	 private List<ItemComanda> itens = new ArrayList<>();
 
 	 @Enumerated(EnumType.STRING)
-	 private StatusComanda status;
+	 private StatusComanda status = StatusComanda.ABERTA;
 	 
 	 @ManyToMany
 	 @JoinTable(

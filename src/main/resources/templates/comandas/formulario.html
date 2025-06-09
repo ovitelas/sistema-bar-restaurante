@@ -1,26 +1,40 @@
 <!DOCTYPE html>
-
 <html xmlns:th="http://www.thymeleaf.org">
-
-<head><title>Nova Comanda</title></head>
-
+<head>
+    <title>Nova Comanda</title>
+</head>
 <body>
-	<h1>Nova Comanda</h1>
-	<form th:action="@{/comandas/salvar}" th:object="${comanda}" method="post">
-	
-		<label>Cliente:</label>
-		<select th:field="*{cliente}" required>
-			<option th:each="cliente : ${clientes}" th:value="${cliente}" th:text="${cliente.nome}">Cliente</option>
-		</select><br/>
-		
-		<label>Produtos:</label><br/>
-		<select th:field="*{produtos}" multiple required>
-		    <option th:each="produto : ${produtos}" th:value="${produto.id}" th:text="${produto.nome}">Produto</option>
-		</select>
-	
-	
-	    <button type="submit">Salvar Comanda</button>
-	</form>
+    <h1>Nova Comanda</h1>
 
+    <form th:action="@{/comandas/salvar}" th:object="${comanda}" method="post">
+
+        <label>Cliente:</label>
+        <select th:field="*{cliente}" required>
+            <option th:each="cliente : ${clientes}"
+                    th:value="${cliente}"
+                    th:text="${cliente.nome}">
+                Cliente
+            </option>
+        </select>
+        <br/>
+
+        <h2>Itens da Comanda</h2>
+        <div th:each="item, iterStat : *{itens}">
+            <label>Produto:</label>
+            <select th:field="*{itens[__${iterStat.index}__].produto.id}">
+                <option th:each="produto : ${produtos}"
+                        th:value="${produto.id}"
+                        th:text="${produto.nome}">
+                    Produto
+                </option>
+            </select>
+
+            <label>Quantidade:</label>
+            <input type="number" min="1" th:field="*{itens[__${iterStat.index}__].quantidade}" required />
+            <br/>
+        </div>
+
+        <button type="submit">Salvar Comanda</button>
+    </form>
 </body>
 </html>

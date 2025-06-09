@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detalhes da Comanda</title>
+    <style>
+	    @media print {
+	        body * {
+	            visibility: hidden;
+	        }
+	        #codigo-barras, #codigo-barras * {
+	            visibility: visible;
+	        }
+	        #codigo-barras {
+	            position: absolute;
+	            left: 0;
+	            top: 0;
+	        }
+	    }
+	</style>
+    
+</head>
+<body>
+    <h1>Detalhes da Comanda</h1>
+
+    <p><strong>ID:</strong> <span th:text="${comanda.id}"></span></p>
+    <p><strong>Cliente:</strong> <span th:text="${comanda.cliente.nome}"></span></p>
+    <p><strong>Data:</strong> <span th:text="${#dates.format(comanda.data, 'dd/MM/yyyy HH:mm')}"></span></p>
+    <p><strong>Status:</strong> <span th:text="${comanda.status}"></span></p>
+    <p><strong>Total:</strong> R$ <span th:text="${comanda.total}"></span></p>
+
+    <h2>Itens</h2>
+    <table border="1">
+        <tr>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Preço Unitário</th>
+            <th>Subtotal</th>
+        </tr>
+        <tr th:each="item : ${comanda.itens}">
+            <td th:text="${item.produto.nome}"></td>
+            <td th:text="${item.quantidade}"></td>
+            <td th:text="${item.produto.preco}"></td>
+            <td th:text="${#numbers.formatDecimal(item.produto.preco.multiply(T(item.quantidade).intValue()), 2, 'COMMA')}"></td>
+        </tr>
+    </table>
+
+    <br/>
+    <div th:if="${comanda.status.name() == 'ABERTA'}">
+        <a th:href="@{'/comandas/fechar/' + ${comanda.id}}" onclick="return confirm('Deseja fechar esta comanda?')">
+            <button>Fechar Comanda</button>
+        </a>
+    </div>
+    
+    <div th:if="${comanda.status.name() == 'ABERTA'}">
+   		<a th:href="@{'/comandas/fechar/' + ${comanda.id}}" onclick="return confirm('Deseja fechar esta comanda?')">
+        <button>Fechar Comanda</button>
+    	</a>
+    
+   	 	<a th:href="@{'/comandas/cancelar/' + ${comanda.id}}" onclick="return confirm('Deseja cancelar esta comanda?')">
+    	<button>Cancelar Comanda</button>
+    	</a>
+	</div>
+    
+
+    <div th:if="${comanda.status.name() == 'FECHADA'}">
+        <p><strong>Comanda fechada.</strong></p>
+    </div>
+
+    <a href="/comandas">Voltar</a>
+    
+    <div id="codigo-barras">
+	    <h2>Código de Barras:</h2>
+	    <img th:src="@{'/comandas/barcode/' + ${comanda.codigoBarras}}" alt="Código de Barras" />
+	</div>
+    
+    <button onclick="window.print()">Imprimir Código de Barras</button>
+    
+    <a th:href="@{'/comandas/pdf/' + ${comanda.id}}" target="_blank">
+    <button>Baixar PDF</button>
+	</a>
+	
+	<div th:if="${comanda.status.name() == 'ABERTA'}">
+    	<a th:href="@{'/comandas/fechar/' + ${comanda.id}}" class="btn btn-success">Fechar Comanda</a>
+    	<a th:href="@{'/comandas/cancelar/' + ${comanda.id}}" class="btn btn-danger">Cancelar Comanda</a>
+	</div>
+	
+    
+</body>
+</html>

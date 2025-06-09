@@ -6,6 +6,8 @@ import com.victor.sistemabar.repository.ComandaRepository;
 import com.victor.sistemabar.repository.ProdutoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -18,6 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ComandaService {
 
+	
     private final ComandaRepository comandaRepository;
     private final ProdutoRepository produtoRepository;
     private final ClienteRepository clienteRepository;
@@ -51,11 +54,13 @@ public class ComandaService {
         return comandaRepository.findAll();
     }
 
-    public Optional<Comanda> buscarPorId(Long id) {
-        return comandaRepository.findById(id);
-    }
 
     public void excluir(Long id) {
         comandaRepository.deleteById(id);
     }
+    
+    public Comanda buscarPorId(Long id) {
+    	return comandaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Comanda não encontrada com ID: " + id));
+    }
+    
 }

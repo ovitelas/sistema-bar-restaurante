@@ -1,9 +1,9 @@
-package com.victor.sistemabar.model;
+package com.victor.sistemabar;
 
 public enum StatusComanda {
 	
 	ABERTA,
-	FECHADA, 
+	FECHADA,
 	CANCELADA
 
 }

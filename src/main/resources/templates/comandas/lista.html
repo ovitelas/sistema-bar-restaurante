@@ -1,34 +1,57 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Lista de Comandas</title></head>
+<head>
+    <title>Lista de Comandas</title>
+    <style>
+        .fechada { color: green; font-weight: bold; }
+        .cancelada { color: gray; text-decoration: line-through; }
+        .aberta { color: red; }
+    </style>
+</head>
 <body>
 
-	<h1>Comandas</h1>
-	<a href="/comandas/nova">Nova Comanda</a>
-	<table border="1">
-	
-		<tr>
-		    <th>ID</th>
-            <th>Cliente</th>
-            <th>Data</th>
-            <th>Total</th>
-			<th>Código de Barras</th>
-			<th>Ações</th>
-		</tr>
-		
-		<tr th:each="comanda : ${comandas}">
-		    <td th:text="${comanda.id}"></td>
-            <td th:text="${comanda.cliente.nome}"></td>
-            <td th:text="${#dates.format(comanda.data, 'dd/MM/yyyy HH:mm')}"></td>
-            <td th:text="${comanda.total}"></td>
-            <td th:text="${comanda.codigoBarras}"></td>
-            <td>
-            	<a th:href="@{'/comandas/editar/' + ${comanda.id}}">Editar</a> |
-            	<a th:href="@{'/comandas/excluir/' + ${comanda.id}}" onclick="return confirm('Tem certeza que deseja excluir esta comanda?')">Excluir</a>
-            </td>
-		</tr>
-	</table>
+<h1>Comandas</h1>
+<a href="/comandas/nova">Nova Comanda</a>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Data</th>
+        <th>Total</th>
+        <th>Código de Barras</th>
+        <th>Status</th>
+        <th>Ações</th>
+    </tr>
+
+    <tr th:each="comanda : ${comandas}">
+        <td th:text="${comanda.id}"></td>
+        <td th:text="${comanda.cliente.nome}"></td>
+        <td th:text="${#dates.format(comanda.data, 'dd/MM/yyyy HH:mm')}"></td>
+        <td th:text="${comanda.total}"></td>
+        <td th:text="${comanda.codigoBarras}"></td>
+
+        <td>
+            <span th:if="${comanda.status.name() == 'ABERTA'}" class="aberta">ABERTA</span>
+            <span th:if="${comanda.status.name() == 'FECHADA'}" class="fechada">FECHADA</span>
+            <span th:if="${comanda.status.name() == 'CANCELADA'}" class="cancelada">CANCELADA</span>
+        </td>
+
+        <td>
+            <a th:href="@{'/comandas/editar/' + ${comanda.id}}">Editar</a> |
+            <a th:href="@{'/comandas/excluir/' + ${comanda.id}}"
+               onclick="return confirm('Tem certeza que deseja excluir esta comanda?')">Excluir</a> |
+            <a th:href="@{'/comandas/detalhes/' + ${comanda.id}}">Visualizar</a>
+
+            <span th:if="${comanda.status.name() == 'ABERTA'}">
+                | <a th:href="@{'/comandas/fechar/' + ${comanda.id}}"
+                     onclick="return confirm('Deseja fechar esta comanda?')">Fechar</a>
+                | <a th:href="@{'/comandas/cancelar/' + ${comanda.id}}"
+                     onclick="return confirm('Deseja cancelar esta comanda?')">Cancelar</a>
+            </span>
+        </td>
+    </tr>
+</table>
 
 </body>
-
 </html>
