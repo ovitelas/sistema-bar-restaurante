@@ -1,57 +1,67 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Lista de Comandas</title>
-    <style>
-        .fechada { color: green; font-weight: bold; }
-        .cancelada { color: gray; text-decoration: line-through; }
-        .aberta { color: red; }
-    </style>
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="fragments/layout :: layout (~{::body})"
+      th:with="titulo='Lista de Comandas', conteudo='this :: corpo'">
 <body>
+<div th:fragment="corpo">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Comandas</h2>
+        <a class="btn btn-success" th:href="@{/comandas/nova}">
+            <i class="bi bi-plus-circle"></i> Nova Comanda
+        </a>
+    </div>
 
-<h1>Comandas</h1>
-<a href="/comandas/nova">Nova Comanda</a>
-
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Cliente</th>
-        <th>Data</th>
-        <th>Total</th>
-        <th>Código de Barras</th>
-        <th>Status</th>
-        <th>Ações</th>
-    </tr>
-
-    <tr th:each="comanda : ${comandas}">
-        <td th:text="${comanda.id}"></td>
-        <td th:text="${comanda.cliente.nome}"></td>
-        <td th:text="${#dates.format(comanda.data, 'dd/MM/yyyy HH:mm')}"></td>
-        <td th:text="${comanda.total}"></td>
-        <td th:text="${comanda.codigoBarras}"></td>
-
-        <td>
-            <span th:if="${comanda.status.name() == 'ABERTA'}" class="aberta">ABERTA</span>
-            <span th:if="${comanda.status.name() == 'FECHADA'}" class="fechada">FECHADA</span>
-            <span th:if="${comanda.status.name() == 'CANCELADA'}" class="cancelada">CANCELADA</span>
-        </td>
-
-        <td>
-            <a th:href="@{'/comandas/editar/' + ${comanda.id}}">Editar</a> |
-            <a th:href="@{'/comandas/excluir/' + ${comanda.id}}"
-               onclick="return confirm('Tem certeza que deseja excluir esta comanda?')">Excluir</a> |
-            <a th:href="@{'/comandas/detalhes/' + ${comanda.id}}">Visualizar</a>
-
-            <span th:if="${comanda.status.name() == 'ABERTA'}">
-                | <a th:href="@{'/comandas/fechar/' + ${comanda.id}}"
-                     onclick="return confirm('Deseja fechar esta comanda?')">Fechar</a>
-                | <a th:href="@{'/comandas/cancelar/' + ${comanda.id}}"
-                     onclick="return confirm('Deseja cancelar esta comanda?')">Cancelar</a>
-            </span>
-        </td>
-    </tr>
-</table>
-
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Data</th>
+                <th>Total</th>
+                <th>Código de Barras</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="comanda : ${comandas}">
+                <td th:text="${comanda.id}"></td>
+                <td th:text="${comanda.cliente.nome}"></td>
+                <td th:text="${#dates.format(comanda.data, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${comanda.total}"></td>
+                <td th:text="${comanda.codigoBarras}"></td>
+                <td>
+                    <span th:if="${comanda.status.name() == 'ABERTA'}" class="badge text-bg-danger">ABERTA</span>
+                    <span th:if="${comanda.status.name() == 'FECHADA'}" class="badge text-bg-success">FECHADA</span>
+                    <span th:if="${comanda.status.name() == 'CANCELADA'}" class="badge text-bg-secondary">CANCELADA</span>
+                </td>
+                <td>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a class="btn btn-primary" th:href="@{'/comandas/editar/' + ${comanda.id}}">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a class="btn btn-danger" th:href="@{'/comandas/excluir/' + ${comanda.id}}"
+                           onclick="return confirm('Excluir comanda?')">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                        <a class="btn btn-secondary" th:href="@{'/comandas/detalhes/' + ${comanda.id}}">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a class="btn btn-warning" th:if="${comanda.status.name() == 'ABERTA'}"
+                           th:href="@{'/comandas/fechar/' + ${comanda.id}}"
+                           onclick="return confirm('Fechar comanda?')">
+                            <i class="bi bi-lock-fill"></i>
+                        </a>
+                        <a class="btn btn-dark" th:if="${comanda.status.name() == 'ABERTA'}"
+                           th:href="@{'/comandas/cancelar/' + ${comanda.id}}"
+                           onclick="return confirm('Cancelar comanda?')">
+                            <i class="bi bi-x-circle"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

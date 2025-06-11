@@ -1,89 +1,83 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Detalhes da Comanda</title>
-    <style>
-	    @media print {
-	        body * {
-	            visibility: hidden;
-	        }
-	        #codigo-barras, #codigo-barras * {
-	            visibility: visible;
-	        }
-	        #codigo-barras {
-	            position: absolute;
-	            left: 0;
-	            top: 0;
-	        }
-	    }
-	</style>
-    
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="fragments/layout :: layout (~{::body})"
+      th:with="titulo='Detalhes da Comanda', conteudo='this :: corpo'">
 <body>
-    <h1>Detalhes da Comanda</h1>
-
-    <p><strong>ID:</strong> <span th:text="${comanda.id}"></span></p>
-    <p><strong>Cliente:</strong> <span th:text="${comanda.cliente.nome}"></span></p>
-    <p><strong>Data:</strong> <span th:text="${#dates.format(comanda.data, 'dd/MM/yyyy HH:mm')}"></span></p>
-    <p><strong>Status:</strong> <span th:text="${comanda.status}"></span></p>
-    <p><strong>Total:</strong> R$ <span th:text="${comanda.total}"></span></p>
-
-    <h2>Itens</h2>
-    <table border="1">
-        <tr>
-            <th>Produto</th>
-            <th>Quantidade</th>
-            <th>Preço Unitário</th>
-            <th>Subtotal</th>
-        </tr>
-        <tr th:each="item : ${comanda.itens}">
-            <td th:text="${item.produto.nome}"></td>
-            <td th:text="${item.quantidade}"></td>
-            <td th:text="${item.produto.preco}"></td>
-            <td th:text="${#numbers.formatDecimal(item.produto.preco.multiply(T(item.quantidade).intValue()), 2, 'COMMA')}"></td>
-        </tr>
-    </table>
-
-    <br/>
-    <div th:if="${comanda.status.name() == 'ABERTA'}">
-        <a th:href="@{'/comandas/fechar/' + ${comanda.id}}" onclick="return confirm('Deseja fechar esta comanda?')">
-            <button>Fechar Comanda</button>
+<div th:fragment="corpo">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Comanda nº <span th:text="${comanda.id}"></span></h2>
+        <a class="btn btn-secondary" th:href="@{/comandas}">
+            <i class="bi bi-arrow-left-circle"></i> Voltar para lista
         </a>
     </div>
-    
-    <div th:if="${comanda.status.name() == 'ABERTA'}">
-   		<a th:href="@{'/comandas/fechar/' + ${comanda.id}}" onclick="return confirm('Deseja fechar esta comanda?')">
-        <button>Fechar Comanda</button>
-    	</a>
-    
-   	 	<a th:href="@{'/comandas/cancelar/' + ${comanda.id}}" onclick="return confirm('Deseja cancelar esta comanda?')">
-    	<button>Cancelar Comanda</button>
-    	</a>
-	</div>
-    
 
-    <div th:if="${comanda.status.name() == 'FECHADA'}">
-        <p><strong>Comanda fechada.</strong></p>
+    <!-- Informações da Comanda -->
+    <div class="mb-3">
+        <strong>Cliente:</strong> <span th:text="${comanda.cliente.nome}"></span><br/>
+        <strong>Data:</strong> <span th:text="${#dates.format(comanda.data, 'dd/MM/yyyy HH:mm')}"></span><br/>
+        <strong>Status:</strong>
+        <span th:classappend="${comanda.status.name() == 'ABERTA'} ? 'text-danger fw-bold' :
+                              (comanda.status.name() == 'FECHADA') ? 'text-success fw-bold' :
+                              'text-secondary text-decoration-line-through'">
+            <span th:text="${comanda.status.name()}"></span>
+        </span><br/>
+        <strong>Total:</strong> R$ <span th:text="${comanda.total}"></span>
     </div>
 
-    <a href="/comandas">Voltar</a>
-    
-    <div id="codigo-barras">
-	    <h2>Código de Barras:</h2>
-	    <img th:src="@{'/comandas/barcode/' + ${comanda.codigoBarras}}" alt="Código de Barras" />
-	</div>
-    
-    <button onclick="window.print()">Imprimir Código de Barras</button>
-    
-    <a th:href="@{'/comandas/pdf/' + ${comanda.id}}" target="_blank">
-    <button>Baixar PDF</button>
-	</a>
-	
-	<div th:if="${comanda.status.name() == 'ABERTA'}">
-    	<a th:href="@{'/comandas/fechar/' + ${comanda.id}}" class="btn btn-success">Fechar Comanda</a>
-    	<a th:href="@{'/comandas/cancelar/' + ${comanda.id}}" class="btn btn-danger">Cancelar Comanda</a>
-	</div>
-	
-    
+    <!-- Código de Barras -->
+    <div class="mb-4">
+        <h5>Código de Barras:</h5>
+        <img th:src="@{'/comandas/barcode/' + ${comanda.id}}" alt="Código de Barras"/>
+        <br/>
+        <a th:href="@{'/comandas/imprimir-barcode/' + ${comanda.id}}" class="btn btn-outline-dark mt-2" target="_blank">
+            <i class="bi bi-printer"></i> Imprimir Código
+        </a>
+    </div>
+
+    <!-- Itens da Comanda -->
+    <div>
+        <h4>Itens</h4>
+        <table class="table table-striped">
+            <thead class="table-light">
+            <tr>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Preço Unitário</th>
+                <th>Subtotal</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${comanda.itens}">
+                <td th:text="${item.produto.nome}"></td>
+                <td th:text="${item.quantidade}"></td>
+                <td th:text="${#numbers.formatDecimal(item.produto.preco, 1, 'POINT', 2, 'COMMA')}"></td>
+                <td th:text="${#numbers.formatDecimal(item.produto.preco * item.quantidade, 1, 'POINT', 2, 'COMMA')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Ações -->
+    <div class="mt-4 d-flex gap-2">
+        <a class="btn btn-outline-danger"
+           th:href="@{'/comandas/cancelar/' + ${comanda.id}}"
+           th:if="${comanda.status.name() == 'ABERTA'}"
+           onclick="return confirm('Tem certeza que deseja cancelar esta comanda?')">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </a>
+
+        <a class="btn btn-outline-success"
+           th:href="@{'/comandas/fechar/' + ${comanda.id}}"
+           th:if="${comanda.status.name() == 'ABERTA'}"
+           onclick="return confirm('Deseja fechar esta comanda?')">
+            <i class="bi bi-check-circle"></i> Fechar
+        </a>
+
+        <a class="btn btn-outline-primary"
+           th:href="@{'/comandas/gerar-pdf/' + ${comanda.id}}" target="_blank">
+            <i class="bi bi-file-earmark-pdf"></i> Gerar PDF
+        </a>
+    </div>
+</div>
 </body>
 </html>
