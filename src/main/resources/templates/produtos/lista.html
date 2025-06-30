@@ -45,4 +45,9 @@
 </table>
 <th:block th:replace="fragments/footer :: footer"></th:block>
 </body>
+<div th:if="${mensagem}" class="alert" 
+     th:classappend="${tipoMensagem == 'sucesso'} ? ' alert-success' : ' alert-danger'">
+    <p th:text="${mensagem}"></p>
+</div>
+
 </html>

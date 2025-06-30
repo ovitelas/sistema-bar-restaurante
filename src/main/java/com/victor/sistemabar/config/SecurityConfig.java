@@ -31,8 +31,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/css/**", "/js/**", "/imagens/**", "/h2-console/**").permitAll()
-                .requestMatchers("/admin/**", "/usuarios/**").hasRole("ADMIN")
+                .requestMatchers("/login", "/css/**", "/js/**", "/imagens/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/usuarios/**").hasRole("ADMIN")
+                .requestMatchers("/comandas/**").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -43,10 +45,12 @@ public class SecurityConfig {
             .logout(logout -> logout.permitAll())
             .exceptionHandling(e -> e.accessDeniedPage("/acesso-negado"))
             .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
-            .headers(headers -> headers.frameOptions(frame -> frame.disable()));
+            .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+            .authenticationProvider(authenticationProvider(userDetailsService(), passwordEncoder()));
 
         return http.build();
     }
+
 
     @Bean
     public UserDetailsService userDetailsService() {

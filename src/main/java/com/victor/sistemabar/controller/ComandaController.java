@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -36,6 +37,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.ProcessBuilder.Redirect;
 import java.math.BigDecimal;
 
 @Controller
@@ -67,32 +69,24 @@ public class ComandaController {
     }
 
     @PostMapping("/salvar")
-    public String salvarComanda(@Valid Comanda comanda, BindingResult result, Model model) {
+    public String salvarComanda(@Valid Comanda comanda, BindingResult result, Model model, RedirectAttributes redirect) {
         if (result.hasErrors()) {
             model.addAttribute("clientes", clienteRepository.findAll());
             model.addAttribute("produtos", produtoRepository.findAll());
             return "comandas/formulario";
         }
 
-        BigDecimal total = BigDecimal.ZERO;
-        for (ItemComanda item : comanda.getItens()) {
-            if (item.getProduto() != null && item.getQuantidade() > 0) {
-                Produto produto = produtoRepository.findById(item.getProduto().getId()).orElseThrow();
-                item.setProduto(produto);
-                item.setComanda(comanda);
-                item.setSubtotal(produto.getPreco().multiply(BigDecimal.valueOf(item.getQuantidade())));
-                total = total.add(item.getSubtotal());
-            }
-        }
-
-        comanda.setTotal(total);
+        BigDecimal total = calcularTotal(comanda);
         comanda.setStatus(StatusComanda.ABERTA);
-        comanda.setCodigoBarras(CodigoBarrasUtil.gerarCodigoBarras());
+        comanda.setCodigoBarras(gerarCodigoBarrasUnico());
 
         comandaRepository.save(comanda);
 
+        redirect.addFlashAttribute("mensagemSucesso", "Comanda salva com sucesso!");
+
         return "redirect:/comandas";
     }
+
 
     @GetMapping("/editar/{id}")
     public String editarComanda(@PathVariable Long id, Model model) {
@@ -104,8 +98,17 @@ public class ComandaController {
     }
 
     @GetMapping("/excluir/{id}")
-    public String excluirComanda(@PathVariable Long id) {
-        comandaRepository.deleteById(id);
+    public String excluirComanda(@PathVariable Long id, RedirectAttributes redirect) {
+        Comanda comanda = comandaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Comanda não encontrada: " + id));
+
+        if (comanda.getStatus() == StatusComanda.ABERTA) {
+            comandaRepository.deleteById(id);
+            redirect.addFlashAttribute("mensagemSucesso", "Comanda excluída com sucesso.");
+        } else {
+            redirect.addFlashAttribute("mensagemErro", "Só é possível excluir comandas ABERTAS.");
+        }
+
         return "redirect:/comandas";
     }
 
@@ -117,22 +120,38 @@ public class ComandaController {
     }
 
     @GetMapping("/fechar/{id}")
-    public String fecharComanda(@PathVariable Long id) {
-        Comanda comanda = comandaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Comanda não encontrada: " + id));
-        comanda.setStatus(StatusComanda.FECHADA);
-        comandaRepository.save(comanda);
+    public String fecharComanda(@PathVariable Long id, RedirectAttributes redirect) {
+        Comanda comanda = comandaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Comanda não encontrada: " + id));
+
+        if (comanda.getStatus() == StatusComanda.ABERTA) {
+            comanda.setStatus(StatusComanda.FECHADA);
+            comandaRepository.save(comanda);
+            redirect.addFlashAttribute("mensagemSucesso", "Comanda fechada com sucesso.");
+        } else {
+            redirect.addFlashAttribute("mensagemErro", "Apenas comandas ABERTAS podem ser fechadas.");
+        }
+
         return "redirect:/comandas/detalhes/" + id;
     }
 
+
     @GetMapping("/cancelar/{id}")
-    public String cancelarComanda(@PathVariable Long id) {
-        Comanda comanda = comandaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Comanda não encontrada: " + id));
+    public String cancelarComanda(@PathVariable Long id, RedirectAttributes redirect) {
+        Comanda comanda = comandaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Comanda não encontrada: " + id));
+
         if (comanda.getStatus() == StatusComanda.ABERTA) {
             comanda.setStatus(StatusComanda.CANCELADA);
             comandaRepository.save(comanda);
+            redirect.addFlashAttribute("mensagemSucesso", "Comanda cancelada com sucesso.");
+        } else {
+            redirect.addFlashAttribute("mensagemErro", "Apenas comandas ABERTAS podem ser canceladas.");
         }
+
         return "redirect:/comandas/detalhes/" + id;
     }
+
 
     @GetMapping("/comandas/barcode/{codigo}")
     public void gerarCodigoBarras(@PathVariable String codigo, HttpServletResponse response) throws Exception {
@@ -182,7 +201,7 @@ public class ComandaController {
         document.add(new Paragraph(" "));
         document.add(new Paragraph("Comanda #" + comanda.getId()));
         document.add(new Paragraph("Cliente: " + comanda.getCliente().getNome()));
-        document.add(new Paragraph("Data: " + comanda.getData().toString()));
+        document.add(new Paragraph("Data: " + comanda.getDataHora().toString()));
         document.add(new Paragraph("Status: " + comanda.getStatus().name()));
         document.add(new Paragraph("Total: R$ " + comanda.getTotal()));
         document.add(new Paragraph(" "));
@@ -198,6 +217,30 @@ public class ComandaController {
         }
 
         document.close();
+    }
+    
+    private BigDecimal calcularTotal(Comanda comanda) {
+    	BigDecimal total = BigDecimal.ZERO;
+    	
+    	for (ItemComanda item : comanda.getItens()) {
+    		if (item.getProduto() != null && item.getQuantidade() > 0) {
+    			Produto produto = produtoRepository.findById(item.getProduto().getId())
+    					.orElseThrow(() -> new IllegalArgumentException("Produto não encontrado: " + item.getProduto().getId()));
+    			item.setProduto(produto);
+    			item.setComanda(comanda);
+    			total = total.add(item.getSubtotal());
+    		}
+    	}
+    	
+    	return total;
+    }
+    
+    private String gerarCodigoBarrasUnico() {
+    	String codigo;
+    	do {
+    		codigo = CodigoBarrasUtil.gerarCodigoBarras();
+    	} while (comandaRepository.existsByCodigoBarras(codigo));
+    	return codigo;
     }
 
 }

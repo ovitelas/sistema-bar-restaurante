@@ -4,6 +4,7 @@ public enum StatusComanda {
 	
 	ABERTA,
 	FECHADA, 
-	CANCELADA
+	CANCELADA,
+	PAGA
 
 }

@@ -34,9 +34,8 @@ public class ComandaService {
 
         Comanda comanda = new Comanda();
         comanda.setCliente(cliente);
-        comanda.setData(LocalDateTime.now());
         comanda.setDataHora(LocalDateTime.now());
-        comanda.setProdutos(produtos);
+        comanda.setDataHora(LocalDateTime.now());
         comanda.setStatus(StatusComanda.ABERTA);
 
         // Calcular total
@@ -44,7 +43,6 @@ public class ComandaService {
                 .map(Produto::getPreco)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        comanda.setTotal(total);
         comanda.setCodigoBarras("CMD" + System.currentTimeMillis()); // simples para testes
 
         return comandaRepository.save(comanda);
@@ -62,5 +60,17 @@ public class ComandaService {
     public Comanda buscarPorId(Long id) {
     	return comandaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Comanda não encontrada com ID: " + id));
     }
+    
+    public void salvarComanda(Comanda comanda) {
+        
+        BigDecimal total = comanda.getItens().stream()
+            .map(ItemComanda::getSubtotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+
+        
+        comandaRepository.save(comanda);
+    }
+
     
 }

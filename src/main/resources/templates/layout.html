@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Bar/Restaurante</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <nav class="sidebar bg-dark text-white p-3 vh-100">
+            <h4 class="text-center mb-4">Menu</h4>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link text-white" href="/dashboard">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="/produtos">Produtos</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="/clientes">Clientes</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="/comandas">Comandas</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="/usuarios">Usuários</a></li>
+                <li class="nav-item"><a class="nav-link text-danger" href="/logout">Sair</a></li>
+            </ul>
+        </nav>
+
+        <!-- Conteúdo principal -->
+        <div class="flex-grow-1">
+            <!-- Navbar Fixa -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top border-bottom">
+                <div class="container-fluid">
+                    <a class="navbar-brand fw-bold" href="/dashboard">Sistema Bar</a>
+                </div>
+            </nav>
+
+            <!-- Conteúdo renderizado -->
+            <main class="p-4">
+                <div th:replace="~{::section}"></div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Filtro de Pagamentos</title></head>
+<body>
+    <h1>Filtrar Pagamentos</h1>
+    <form th:action="@{/pagamentos/filtro}" method="post" th:object="${filtro}">
+        <label>Data Início:</label>
+        <input type="date" th:field="*{dataInicio}" /><br/>
+
+        <label>Data Fim:</label>
+        <input type="date" th:field="*{dataFim}" /><br/>
+
+        <label>Forma de Pagamento:</label>
+        <select th:field="*{formaPagamento}">
+            <option th:each="forma : ${formas}" th:value="${forma}" th:text="${forma}"></option>
+        </select><br/>
+
+        <button type="submit">Filtrar</button>
+    </form>
+</body>
+</html>

@@ -20,5 +20,10 @@ public class Cliente {
 	@Email(message = "Email inválido")
 	private String email;
 	
+	@Pattern(regexp = "\\d{11}", message = "CPF deve conter 11 dígitos")
+	@Column(unique = true)
+	private String cpf;
+
+	
 	private String telefone;
 }

@@ -16,14 +16,21 @@ public class ItemComanda {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "comanda_id")
     private Comanda comanda;
 
     @ManyToOne
+    @JoinColumn(name = "produto_id")
     private Produto produto;
 
     private Integer quantidade;
 
-    private BigDecimal subtotal;
+    public BigDecimal getSubtotal() {
+        if (produto != null && quantidade != null) {
+            return produto.getPreco().multiply(BigDecimal.valueOf(quantidade));
+        }
+        return BigDecimal.ZERO;
+    }
 }
 
 

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cadastro de Usuário</title>
+    <th:block th:replace="fragments/header :: head"></th:block>
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Cadastrar Novo Usuário</h2>
+
+    <form th:action="@{/usuarios/salvar}" th:object="${usuarioDTO}" method="post" class="row g-3">
+
+        <div class="col-md-6">
+            <label for="username" class="form-label">Nome de Usuário</label>
+            <input type="text" th:field="*{username}" class="form-control" />
+            <div th:if="${#fields.hasErrors('username')}" class="text-danger" th:errors="*{username}">Erro</div>
+        </div>
+
+        <div class="col-md-6">
+            <label for="senha" class="form-label">Senha</label>
+            <input type="password" th:field="*{senha}" class="form-control" />
+            <div th:if="${#fields.hasErrors('senha')}" class="text-danger" th:errors="*{senha}">Erro</div>
+        </div>
+
+        <div class="col-md-6">
+            <label for="confirmarSenha" class="form-label">Confirmar Senha</label>
+            <input type="password" th:field="*{confirmarSenha}" class="form-control" />
+            <div th:if="${#fields.hasErrors('confirmarSenha')}" class="text-danger" th:errors="*{confirmarSenha}">Erro</div>
+        </div>
+
+        <div class="col-md-6">
+            <label for="role" class="form-label">Papel (Role)</label>
+            <select th:field="*{role}" class="form-select">
+                <option value="">Selecione...</option>
+                <option value="ADMIN">ADMIN</option>
+                <option value="USER">USER</option>
+            </select>
+            <div th:if="${#fields.hasErrors('role')}" class="text-danger" th:errors="*{role}">Erro</div>
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-success">Salvar</button>
+            <a href="/" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<th:block th:replace="fragments/footer :: footer"></th:block>
+</body>
+</html>

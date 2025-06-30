@@ -1,0 +1,9 @@
+body {
+    background-color: #f9f9f9;
+}
+.sidebar {
+    min-width: 220px;
+}
+.sidebar a:hover {
+    background-color: #495057;
+}

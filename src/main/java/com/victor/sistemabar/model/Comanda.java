@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,34 +14,31 @@ import java.util.List;
 @Setter
 public class Comanda {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
-	@ManyToOne
-	@JoinColumn(name = "cliente_id")
-	private Cliente cliente;
-	private LocalDateTime data;
-	
-		 
-	 private LocalDateTime dataHora = LocalDateTime.now();
-	 
-	 @OneToMany(mappedBy = "comanda", cascade = CascadeType.ALL, orphanRemoval = true)
-	 private List<ItemComanda> itens = new ArrayList<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	 @Enumerated(EnumType.STRING)
-	 private StatusComanda status = StatusComanda.ABERTA;
-	 
-	 @ManyToMany
-	 @JoinTable(
-	     name = "comanda_produtos",
-	     joinColumns = @JoinColumn(name = "comanda_id"),
-	     inverseJoinColumns = @JoinColumn(name = "produto_id")
-	 )
-	 private List<Produto> produtos = new ArrayList<>();
-	 
-	 private BigDecimal total;
-	 
-	 private String codigoBarras;
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
 
+    private LocalDateTime dataHora = LocalDateTime.now();
+
+    @OneToMany(mappedBy = "comanda", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemComanda> itens = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private StatusComanda status = StatusComanda.ABERTA;
+
+    private String codigoBarras;
+
+    public BigDecimal getTotal() {
+        return itens.stream()
+                .map(ItemComanda::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public void fechar() {
+        this.status = StatusComanda.FECHADA;
+    }
 }

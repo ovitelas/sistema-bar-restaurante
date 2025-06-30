@@ -7,13 +7,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.victor.sistemabar.dto.UsuarioDTO;
 import com.victor.sistemabar.model.Usuario;
 import com.victor.sistemabar.repository.UsuarioRepository;
+
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/usuarios")
@@ -26,21 +31,38 @@ public class UsuarioController {
 	private PasswordEncoder passwordEncoder;
 	
 	@GetMapping("/novo")
-	public String formCadastro() {
-		return "usuarios-cadastro-usuario";
+	public String formCadastro(Model model) {
+	    model.addAttribute("usuarioDTO", new UsuarioDTO());
+	    return "usuarios/formulario"; 
 	}
+
 	
 	@PostMapping("/salvar")
-	public String salvar(@RequestParam String username,
-						@RequestParam String senha,
-						@RequestParam String role) {
-		Usuario usuario = new Usuario();
-		usuario.setUsername(username);
-		usuario.setPassword(passwordEncoder.encode(senha));
-		usuario.setRole(role);
-		usuarioRepository.save(usuario);
-		return "redirect:/login";
+	public String salvar(@Valid @ModelAttribute("usuarioDTO") UsuarioDTO usuarioDTO,
+	                     BindingResult result, Model model) {
+
+	    if (usuarioRepository.existsByUsername(usuarioDTO.getUsername())) {
+	        result.rejectValue("username", null, "Nome de usuário já está em uso.");
+	    }
+
+	    if (!usuarioDTO.getSenha().equals(usuarioDTO.getConfirmarSenha())) {
+	        result.rejectValue("confirmarSenha", null, "As senhas não coincidem.");
+	    }
+
+	    if (result.hasErrors()) {
+	        model.addAttribute("usuarioDTO", usuarioDTO);
+	        return "usuarios/formulario";
+	    }
+
+	    Usuario usuario = new Usuario();
+	    usuario.setUsername(usuarioDTO.getUsername());
+	    usuario.setPassword(passwordEncoder.encode(usuarioDTO.getSenha()));
+	    usuario.setRole("ROLE_" + usuarioDTO.getRole().toUpperCase());
+
+	    usuarioRepository.save(usuario);
+	    return "redirect:/login";
 	}
+
 	
 	@PostMapping("/criar")
 	public String criarUsuario(@RequestParam String username, @RequestParam String senha) {

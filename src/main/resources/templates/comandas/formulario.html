@@ -1,22 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="fragments/layout :: layout (~{::body})"
-      th:with="titulo='Nova Comanda', conteudo='this :: corpo'">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layout :: layout">
+<head>
+    <title>Cadastro de Comanda</title>
+</head>
 <body>
-<div th:fragment="corpo">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Nova Comanda</h2>
-        <a class="btn btn-secondary" th:href="@{/comandas}">
-            <i class="bi bi-arrow-left-circle"></i> Voltar para lista
-        </a>
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 th:text="${comanda.id != null} ? 'Editar Comanda #' + ${comanda.id} : 'Nova Comanda'"></h2>
+        <a href="/comandas" class="btn btn-secondary">Voltar</a>
     </div>
 
-    <form th:action="@{/comandas/salvar}" th:object="${comanda}" method="post" class="row g-3">
-
-        <!-- Seleção do Cliente -->
-        <div class="col-12">
-            <label for="cliente" class="form-label">Cliente</label>
-            <select id="cliente" class="form-select" th:field="*{cliente}" required>
+    <form th:action="@{/comandas/salvar}" th:object="${comanda}" method="post">
+        
+        <div class="mb-3">
+            <label class="form-label">Cliente:</label>
+            <select class="form-select" th:field="*{cliente}" required>
                 <option th:each="cliente : ${clientes}"
                         th:value="${cliente}"
                         th:text="${cliente.nome}">
@@ -24,38 +22,29 @@
             </select>
         </div>
 
-        <!-- Itens da Comanda -->
-        <div class="col-12">
-            <h4 class="mt-4">Itens da Comanda</h4>
-        </div>
+        <h4>Itens da Comanda</h4>
 
-        <div th:each="item, iterStat : *{itens}" class="row g-2 align-items-end mb-2">
-            <!-- Produto -->
-            <div class="col-md-6">
-                <label class="form-label">Produto</label>
-                <select class="form-select" th:field="*{itens[__${iterStat.index}__].produto.id}">
-                    <option th:each="produto : ${produtos}"
-                            th:value="${produto.id}"
-                            th:text="${produto.nome}">
-                    </option>
-                </select>
-            </div>
-
-            <!-- Quantidade -->
-            <div class="col-md-4">
-                <label class="form-label">Quantidade</label>
-                <input type="number" min="1" class="form-control"
-                       th:field="*{itens[__${iterStat.index}__].quantidade}" required />
+        <div class="border rounded p-3 mb-3" th:each="item, iterStat : *{itens}">
+            <div class="row g-2">
+                <div class="col-md-6">
+                    <label class="form-label">Produto:</label>
+                    <select class="form-select" th:field="*{itens[__${iterStat.index}__].produto.id}" required>
+                        <option th:each="produto : ${produtos}"
+                                th:value="${produto.id}"
+                                th:text="${produto.nome}">
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Quantidade:</label>
+                    <input type="number" class="form-control" min="1"
+                           th:field="*{itens[__${iterStat.index}__].quantidade}" required/>
+                </div>
             </div>
         </div>
 
-        <!-- Botões -->
-        <div class="col-12 mt-3">
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-save"></i> Salvar Comanda
-            </button>
-        </div>
+        <button type="submit" class="btn btn-success">Salvar Comanda</button>
     </form>
-</div>
+</section>
 </body>
 </html>

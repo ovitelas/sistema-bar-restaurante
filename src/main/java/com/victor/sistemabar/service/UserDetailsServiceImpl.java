@@ -12,19 +12,20 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService  {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
-	@Autowired
-	private UsuarioRepository usuarioRepository;
-	
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Usuario usuario = usuarioRepository.findByUsername(username).
-				orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: "));
-		
-		return new User(usuario.getUsername(), 
-				usuario.getPassword(),
-				Collections.singletonList(new SimpleGrantedAuthority(usuario.getRole())));
-	}
-	
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Usuario usuario = usuarioRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
+
+        return new User(
+                usuario.getUsername(),
+                usuario.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + usuario.getRole()))
+        );
+    }
 }
