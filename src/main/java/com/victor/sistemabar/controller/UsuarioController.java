@@ -19,7 +19,9 @@ import com.victor.sistemabar.model.Usuario;
 import com.victor.sistemabar.repository.UsuarioRepository;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -91,26 +93,37 @@ public class UsuarioController {
 	}
 	
 	@PostMapping("/atualizar")
-	public String atualizarUsuario(@RequestParam Long id,
-								   @RequestParam String username,
-								   @RequestParam String senha,
-								   @RequestParam String role) {
-		Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("ID inválido: " + id));
-		usuario.setUsername(username);
-		if (!senha.isBlank()) {
-			usuario.setPassword(passwordEncoder.encode(senha));
-		}
-		usuario.setRole(role);
-		usuarioRepository.save(usuario);
-		return "redirect:/usuarios/listar";
-		
-	}
+    public String atualizarUsuario(@RequestParam Long id,
+                                   @RequestParam String username,
+                                   @RequestParam String senha,
+                                   @RequestParam String role) {
+		log.info("Atualizando usuário ID {} - Novo nome: {}, Novo role: {}", id, username, role);
+        Usuario usuario = usuarioRepository.findById(id)
+            .orElseThrow(() -> {
+                log.warn("Tentativa de editar usuário inexistente. ID={}", id);
+                return new IllegalArgumentException("ID inválido: " + id);
+            });
+
+        log.info("Atualizando dados do usuário ID={}, novo username={}, novo role={}", id, username, role);
+
+        usuario.setUsername(username);
+        if (!senha.isBlank()) {
+            usuario.setPassword(passwordEncoder.encode(senha));
+        }
+        usuario.setRole(role);
+        usuarioRepository.save(usuario);
+
+        log.info("Usuário ID={} atualizado com sucesso", id);
+        return "redirect:/usuarios/listar";
+    }
 	
 	@GetMapping("/excluir")
-	public String excluirUsuario(@RequestParam("id") Long id) {
-		Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("ID inválido: " + id));
-		usuarioRepository.delete(usuario);
+	public String excluirUsuario(@RequestParam Long id) {
+		log.warn("Excluindo usuário com ID: {}", id);
+		usuarioRepository.deleteById(id);
+		log.info("Usuário ID {} excluído com sucesso", id);
 		return "redirect:/usuarios/listar";
+		
 	}
 	
 

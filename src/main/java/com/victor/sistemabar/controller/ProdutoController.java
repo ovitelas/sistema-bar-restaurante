@@ -13,6 +13,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
 
 import java.util.List;
 
@@ -24,18 +29,25 @@ public class ProdutoController {
     @Autowired
     private ProdutoService produtoService;
 
-    @GetMapping
-    public String listarProdutos(Model model,
-                                  @RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("nome").ascending());
-        Page<Produto> pagina = produtoService.listarPaginado(pageable);
+    @GetMapping("/produtos")
+    public String listarProdutos(@RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "10") int size,
+                                 @RequestParam(defaultValue = "nome") String sort,
+                                 @RequestParam(defaultValue = "asc") String dir,
+                                 Model model) {
 
-        model.addAttribute("pagina", pagina);
-        model.addAttribute("produtos", pagina.getContent());
+        Sort.Direction direction = dir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort));
+        
+        Page<Produto> produtosPage = produtoRepository.findAll(pageable);
+
+        model.addAttribute("produtosPage", produtosPage);
+        model.addAttribute("produtos", produtosPage.getContent());
         model.addAttribute("paginaAtual", page);
-        model.addAttribute("totalPaginas", pagina.getTotalPages());
-
+        model.addAttribute("totalPaginas", produtosPage.getTotalPages());
+        model.addAttribute("sort", sort);
+        model.addAttribute("dir", dir);
+        
         return "produtos/lista";
     }
 

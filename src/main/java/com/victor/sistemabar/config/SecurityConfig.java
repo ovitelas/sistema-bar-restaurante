@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
+import com.victor.sistemabar.security.CustomAuthenticationSuccessHandler;
 import com.victor.sistemabar.service.UserDetailsServiceImpl;
 
 @Configuration
@@ -39,7 +40,7 @@ public class SecurityConfig {
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .successHandler(successHandler())
+                .successHandler(new CustomAuthenticationSuccessHandler())
                 .permitAll()
             )
             .logout(logout -> logout.permitAll())

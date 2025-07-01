@@ -25,6 +25,7 @@ public class Produto {
 	 private String codigoBarras;
 
 	 @NotBlank(message = "Descrição é obrigatória")
+	 @Size(max = 255, message = "A descrição deve ter no máximo 255 caracteres.")
 	 private String descricao;
 
 	 @NotNull(message = "Preço é obrigatório")

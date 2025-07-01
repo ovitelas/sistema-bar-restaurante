@@ -33,7 +33,7 @@
         <tr th:each="produto : ${produtos}">
             <td th:text="${produto.nome}"></td>
             <td th:text="${produto.descricao}"></td>
-            <td th:text="${produto.preco}"></td>
+            <td th:text="${#numbers.formatDecimal(produto.preco, 1, 'COMMA', 2, 'POINT')}"></td>
             <td th:text="${produto.codigoBarras}"></td>
             <td th:text="${produto.quantidadeEstoque}"></td>
             <td>
@@ -43,11 +43,31 @@
         </tr>
     </tbody>
 </table>
-<th:block th:replace="fragments/footer :: footer"></th:block>
-</body>
-<div th:if="${mensagem}" class="alert" 
-     th:classappend="${tipoMensagem == 'sucesso'} ? ' alert-success' : ' alert-danger'">
-    <p th:text="${mensagem}"></p>
+
+<!-- PAGINAÇÃO -->
+<div th:if="${produtosPage.totalPages > 1}" class="mt-3">
+    <nav>
+        <ul class="pagination">
+            <li th:classappend="${produtosPage.first} ? 'disabled'" class="page-item">
+                <a th:href="@{/produtos(page=0)}" class="page-link">Primeira</a>
+            </li>
+            <li th:classappend="${produtosPage.hasPrevious()} ? '' : 'disabled'" class="page-item">
+                <a th:href="@{/produtos(page=${produtosPage.number - 1})}" class="page-link">Anterior</a>
+            </li>
+
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, produtosPage.totalPages - 1)}"
+                th:classappend="${i == produtosPage.number} ? 'active'">
+                <a th:href="@{/produtos(page=${i})}" class="page-link" th:text="${i + 1}"></a>
+            </li>
+
+            <li th:classappend="${produtosPage.hasNext()} ? '' : 'disabled'" class="page-item">
+                <a th:href="@{/produtos(page=${produtosPage.number + 1})}" class="page-link">Próxima</a>
+            </li>
+            <li th:classappend="${produtosPage.last} ? 'disabled'" class="page-item">
+                <a th:href="@{/produtos(page=${produtosPage.totalPages - 1})}" class="page-link">Última</a>
+            </li>
+        </ul>
+    </nav>
 </div>
 
 </html>

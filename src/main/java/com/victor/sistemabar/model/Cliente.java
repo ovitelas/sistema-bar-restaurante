@@ -15,6 +15,7 @@ public class Cliente {
 	private Long id;
 	
 	@NotBlank(message = "O nome é obrigatorio")
+	@Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres.")
 	private String nome;
 	
 	@Email(message = "Email inválido")
@@ -24,6 +25,6 @@ public class Cliente {
 	@Column(unique = true)
 	private String cpf;
 
-	
+	@Size(max = 15, message = "O telefone deve ter no máximo 15 dígitos.")
 	private String telefone;
 }

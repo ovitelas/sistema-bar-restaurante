@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Erro</title>
+</head>
+<body>
+    <h1>Ocorreu um erro</h1>
+    <p><strong>Status:</strong> <span th:text="${erro.status}"></span> - <span th:text="${erro.error}"></span></p>
+    <p><strong>Mensagem:</strong> <span th:text="${erro.message}"></span></p>
+    <p><strong>Path:</strong> <span th:text="${erro.path}"></span></p>
+    <p><strong>Data:</strong> <span th:text="${erro.timestamp}"></span></p>
+
+    <div th:if="${validacoes != null}">
+        <h3>Detalhes dos erros de validação:</h3>
+        <ul>
+            <li th:each="erro : ${validacoes}">
+                <strong th:text="${erro.key}"></strong>: <span th:text="${erro.value}"></span>
+            </li>
+        </ul>
+    </div>
+
+    <a href="/" style="margin-top: 20px; display:block;">Voltar à Página Inicial</a>
+</body>
+</html>

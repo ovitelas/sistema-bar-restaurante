@@ -35,7 +35,7 @@ public class RelatorioController {
 	    @RequestParam(required = false) Long clienteId,
 	    @RequestParam(required = false) String nomeCliente
 	) throws Exception {
-		List<Pagamento> pagamentos = pagamentoRepository.findByFiltro(dataInicio, dataFim, clienteId, nomeCliente);
+		List<Pagamento> pagamentos = pagamentoRepository.filtrarPagamentos(dataInicio, dataFim, null);
 		relatorioService.gerarRelatorioPDFPagamentos(pagamentos, response.getOutputStream());
 
 	}
@@ -50,7 +50,7 @@ public class RelatorioController {
 	    @RequestParam(required = false) String nomeCliente
 	) throws Exception {
 
-	    List<Pagamento> pagamentos = pagamentoRepository.findByFiltro(dataInicio, dataFim, clienteId, nomeCliente);
+		List<Pagamento> pagamentos = pagamentoRepository.filtrarPagamentos(dataInicio, dataFim, null);
 
 	    response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 	    response.setHeader("Content-Disposition", "attachment; filename=relatorio-pagamentos.xlsx");

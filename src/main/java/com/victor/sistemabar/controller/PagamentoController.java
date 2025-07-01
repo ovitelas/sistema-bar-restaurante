@@ -8,6 +8,7 @@ import com.victor.sistemabar.service.ComandaService;
 import com.victor.sistemabar.service.PagamentoService;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -34,24 +35,31 @@ public class PagamentoController {
 	}
 	
 	@PostMapping("/registrar")
-	public String registrarPagamentoSubmit(@ModelAttribute("pagamento") Pagamento pagamento,
+	public String registrarPagamentoSubmit(@ModelAttribute("pagamento") @Valid Pagamento pagamento,
 	                                       BindingResult result,
 	                                       Model model,
 	                                       RedirectAttributes redirect) {
+	    try {
+	        Comanda comanda = comandaService.buscarPorId(pagamento.getComanda().getId());
 
-	    Comanda comanda = comandaService.buscarPorId(pagamento.getComanda().getId());
-	    
-	    if (pagamento.getValorPago().compareTo(comanda.getTotal()) < 0) {
-	        result.rejectValue("valorPago", null, "O valor pago não pode ser menor que o total da comanda.");
+	        if (pagamento.getValorPago().compareTo(comanda.getTotal()) < 0) {
+	            result.rejectValue("valorPago", null, "O valor pago não pode ser menor que o total da comanda.");
+	            model.addAttribute("formasPagamento", FormaPagamento.values());
+	            model.addAttribute("comanda", comanda);
+	            return "pagamentos/registrar";
+	        }
+
+	        pagamentoService.registrarPagamento(pagamento);
+	        redirect.addFlashAttribute("mensagemSucesso", "Pagamento registrado com sucesso!");
+	        return "redirect:/comandas/detalhes/" + comanda.getId();
+
+	    } catch (IllegalStateException | IllegalArgumentException e) {
+	        result.reject(null, e.getMessage());
 	        model.addAttribute("formasPagamento", FormaPagamento.values());
-	        model.addAttribute("comanda", comanda);
 	        return "pagamentos/registrar";
 	    }
-
-	    pagamentoService.registrarPagamento(pagamento);
-	    redirect.addFlashAttribute("mensagemSucesso", "Pagamento registrado com sucesso!");
-	    return "redirect:/comandas/detalhes/" + comanda.getId();
 	}
+
 
 	
 	@GetMapping("/listar")
@@ -75,13 +83,13 @@ public class PagamentoController {
 	}
 	
 	@GetMapping("/relatorio/pdf")
-	public void gerarRelatorioPagamentosPDF(HttpServletResponse response) throws Exception {
+	public void gerarRelatorioPDFPagamentos(HttpServletResponse response) throws Exception {
 	    List<Pagamento> pagamentos = pagamentoService.listarTodos();
 
 	    response.setContentType("application/pdf");
 	    response.setHeader("Content-Disposition", "attachment; filename=pagamentos.pdf");
 
-	    pagamentoService.gerarRelatorioPagamentosPDF(pagamentos, response.getOutputStream());
+	    pagamentoService.gerarRelatorioPDFPagamentos(pagamentos, response.getOutputStream());
 	}
 
 	
