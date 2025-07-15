@@ -23,7 +23,6 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/produtos")
 public class ProdutoController {
 
     @Autowired
@@ -39,7 +38,7 @@ public class ProdutoController {
         Sort.Direction direction = dir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort));
         
-        Page<Produto> produtosPage = produtoRepository.findAll(pageable);
+        Page<Produto> produtosPage = produtoService.listarPaginado(pageable);
 
         model.addAttribute("produtosPage", produtosPage);
         model.addAttribute("produtos", produtosPage.getContent());

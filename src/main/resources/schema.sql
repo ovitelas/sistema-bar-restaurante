@@ -1,6 +1,51 @@
-CREATE TABLE usuario (
-    id BIGINT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    username VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    role VARCHAR(255)
-);
+---- Tabela de usuários
+--CREATE TABLE IF NOT EXISTS usuario (
+--    id SERIAL PRIMARY KEY,
+--    username VARCHAR(100) NOT NULL,
+--    email VARCHAR(100) NOT NULL UNIQUE,
+--    password VARCHAR(255) NOT NULL,
+--    role VARCHAR(20) NOT NULL
+--);
+--
+---- Tabela de clientes
+--CREATE TABLE IF NOT EXISTS cliente (
+--    id SERIAL PRIMARY KEY,
+--    nome VARCHAR(100) NOT NULL,
+--    telefone VARCHAR(20)
+--);
+--
+---- Tabela de produtos
+--CREATE TABLE IF NOT EXISTS produto (
+--    id SERIAL PRIMARY KEY,
+--    nome VARCHAR(100) NOT NULL,
+--    descricao TEXT,
+--    preco NUMERIC(10,2) NOT NULL,
+--    quantidade_estoque INT NOT NULL
+--);
+--
+---- Tabela de comandas
+--CREATE TABLE IF NOT EXISTS comanda (
+--    id SERIAL PRIMARY KEY,
+--    cliente_id INT REFERENCES cliente(id),
+--    data_abertura TIMESTAMP NOT NULL,
+--    data_fechamento TIMESTAMP,
+--    status VARCHAR(20) NOT NULL
+--);
+--
+---- Tabela de itens da comanda
+--CREATE TABLE IF NOT EXISTS item_comanda (
+--    id SERIAL PRIMARY KEY,
+--    comanda_id INT REFERENCES comanda(id),
+--    produto_id INT REFERENCES produto(id),
+--    quantidade INT NOT NULL,
+--    preco_unitario NUMERIC(10,2) NOT NULL
+--);
+--
+---- Tabela de pagamentos
+--CREATE TABLE IF NOT EXISTS pagamento (
+--    id SERIAL PRIMARY KEY,
+--    comanda_id INT REFERENCES comanda(id),
+--    valor_pago NUMERIC(10,2) NOT NULL,
+--    forma_pagamento VARCHAR(50),
+--    data_pagamento TIMESTAMP NOT NULL
+--);

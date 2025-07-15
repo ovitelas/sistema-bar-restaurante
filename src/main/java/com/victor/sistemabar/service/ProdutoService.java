@@ -43,4 +43,6 @@ public class ProdutoService {
     public Produto buscarPorCodigoBarras(String codigoBarras) {
         return produtoRepository.findByCodigoBarras(codigoBarras);
     }
+    
+    
 }

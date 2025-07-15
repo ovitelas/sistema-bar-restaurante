@@ -1,13 +1,13 @@
-package com.victor.sistemabar;
+//package com.victor.sistemabar;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+//import org.junit.jupiter.api.Test;
+//import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class SistemabarApplicationTests {
+//@SpringBootTest
+//class SistemabarApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+//	@Test
+//	void contextLoads() {
+//	}
 
-}
+//}

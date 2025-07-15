@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Controller
@@ -29,13 +31,23 @@ public class RelatorioControllerDTO {
     // Gera o relatório com base nos filtros preenchidos
     @PostMapping
     public String gerarRelatorio(@ModelAttribute("filtro") FiltroRelatorioDTO filtro, Model model) {
+        LocalDateTime dataHoraInicio = filtro.getDataInicio() != null
+                ? filtro.getDataInicio().atStartOfDay()
+                : null;
+
+        LocalDateTime dataHoraFim = filtro.getDataFim() != null
+                ? filtro.getDataFim().atTime(LocalTime.MAX)
+                : null;
+
         List<Comanda> resultado = comandaRepository.findByFiltro(
                 null,
-                filtro.getDataInicio(),
-                filtro.getDataFim(),
+                dataHoraInicio,
+                dataHoraFim,
                 filtro.getNomeCliente()
         );
+
         model.addAttribute("comandas", resultado);
-        return "relatorios/resultado"; 
+        return "relatorios/resultado";
     }
+
 }

@@ -1,6 +1,24 @@
-INSERT INTO cliente (nome, telefone) VALUES ('Cliente Teste', '11950502525');
-
-INSERT INTO produto (nome, preco, estoque) VALUES ('Cerveja', 8.90, 50);
-INSERT INTO produto (nome, preco, estoque) VALUES ('Refrigerante', 6.50, 100);
-
-INSERT INTO usuario (username, password, role) VALUES ('admin', '{bcrypt}$2a$10$EXEMPLOHASHSENHA...', 'ADMIN');
+---- Usuário administrador
+--INSERT INTO usuario (nome, email, senha, papel)
+--VALUES 
+--('Administrador', 'admin@sistemabar.com', '$2a$10$dUgyJHsA1Gp9E2w43S3Qtu9rECpeA8Q8Rp/3Ig02zruNQ0cfuHzyG', 'ADMIN')
+--ON CONFLICT (email) DO NOTHING;
+--
+---- Clientes
+--INSERT INTO cliente (nome, telefone) VALUES 
+--('João Silva', '11999999999'),
+--('Maria Oliveira', '11888888888');
+--
+---- Produtos
+--INSERT INTO produto (nome, descricao, preco, quantidade_estoque) VALUES 
+--('Cerveja', 'Cerveja 600ml', 9.50, 100),
+--('Refrigerante', 'Coca-Cola 2L', 7.00, 50);
+--
+---- Comanda
+--INSERT INTO comanda (cliente_id, data_abertura, status) VALUES 
+--(1, CURRENT_TIMESTAMP, 'ABERTA');
+--
+---- Itens da comanda
+--INSERT INTO item_comanda (comanda_id, produto_id, quantidade, preco_unitario) VALUES 
+--(1, 1, 2, 9.50),
+--(1, 2, 1, 7.00);

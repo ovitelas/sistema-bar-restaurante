@@ -82,7 +82,7 @@ public class PagamentoController {
 	    return "pagamentos/lista";
 	}
 	
-	@GetMapping("/relatorio/pdf")
+	@GetMapping("/relatorio/pagamentos/pdf")
 	public void gerarRelatorioPDFPagamentos(HttpServletResponse response) throws Exception {
 	    List<Pagamento> pagamentos = pagamentoService.listarTodos();
 

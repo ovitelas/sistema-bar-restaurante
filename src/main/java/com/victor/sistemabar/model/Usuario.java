@@ -16,7 +16,7 @@ public class Usuario {
 	@Column(unique = true, nullable = false)
 	private String username;
 	
-	@Column(nullable = false)
+	@Column(name = "senha", nullable = false)
 	private String password;
 	
 	private String role;
