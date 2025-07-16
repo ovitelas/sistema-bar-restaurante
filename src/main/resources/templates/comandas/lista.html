@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
-<head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head">
     <title>Lista de Comandas</title>
 </head>
 <body>
@@ -30,7 +30,7 @@
                 <tr th:each="comanda : ${comandas}">
                     <td th:text="${comanda.id}">1</td>
                     <td th:text="${comanda.cliente.nome}">Cliente</td>
-                    <td th:text="${#dates.format(comanda.data, 'dd/MM/yyyy HH:mm')}">01/01/2024</td>
+                    <td th:text="${#dates.format(comanda.dataHora, 'dd/MM/yyyy HH:mm')}">01/01/2024</td>
                     <td th:text="${comanda.total}">100.00</td>
                     <td th:text="${comanda.codigoBarras}">ABC123</td>
                     <td>
@@ -56,5 +56,6 @@
         </table>
     </div>
 </section>
+<th:block th:replace="fragments/footer :: footer"></th:block>
 </body>
 </html>

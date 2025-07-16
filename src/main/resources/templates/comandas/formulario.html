@@ -10,7 +10,7 @@
         <a href="/comandas" class="btn btn-secondary">Voltar</a>
     </div>
 
-    <form th:action="@{/comandas/salvar}" th:object="${comanda}" method="post">
+    <form th:object="${comanda}" th:action="@{/comandas/salvar}" method="post">
         
         <div class="mb-3">
             <label class="form-label">Cliente:</label>

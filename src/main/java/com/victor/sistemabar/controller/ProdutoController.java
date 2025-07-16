@@ -23,12 +23,13 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/produtos")
 public class ProdutoController {
 
     @Autowired
     private ProdutoService produtoService;
 
-    @GetMapping("/produtos")
+    @GetMapping
     public String listarProdutos(@RequestParam(defaultValue = "0") int page,
                                  @RequestParam(defaultValue = "10") int size,
                                  @RequestParam(defaultValue = "nome") String sort,

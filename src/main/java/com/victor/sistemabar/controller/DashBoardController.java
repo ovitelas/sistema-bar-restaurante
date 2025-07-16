@@ -24,12 +24,16 @@ public class DashboardController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
+    	
+    	System.out.println("Acessando o dashboard...");
 
         long comandasAbertas = comandaRepository.countByStatus(StatusComanda.ABERTA);
 
         BigDecimal faturamentoHoje = comandaRepository
                 .findAll().stream()
-                .filter(c -> c.getDataHora().toLocalDate().equals(LocalDate.now()) && c.getStatus() == StatusComanda.FECHADA)
+                .filter(c -> c.getDataHora() != null &&
+                c.getDataHora().toLocalDate().equals(LocalDate.now()) &&
+                c.getStatus() == StatusComanda.FECHADA)
                 .map(c -> c.getTotal() != null ? c.getTotal() : BigDecimal.ZERO)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 

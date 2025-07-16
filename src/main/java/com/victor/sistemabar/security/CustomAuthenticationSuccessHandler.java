@@ -14,6 +14,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
         log.info("Usuário '{}' fez login com sucesso.", authentication.getName());
-        response.sendRedirect("/produtos");
+        response.sendRedirect("/dashboard");
     }
 }

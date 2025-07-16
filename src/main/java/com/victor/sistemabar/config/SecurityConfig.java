@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/usuarios/**").hasRole("ADMIN")
                 .requestMatchers("/comandas/**").authenticated()
+                .requestMatchers("/dahsboard").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -43,7 +44,7 @@ public class SecurityConfig {
                 .successHandler(new CustomAuthenticationSuccessHandler())
                 .permitAll()
             )
-            .logout(logout -> logout.permitAll())
+            .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll())
             .exceptionHandling(e -> e.accessDeniedPage("/acesso-negado"))
             .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
             .headers(headers -> headers.frameOptions(frame -> frame.disable()))
